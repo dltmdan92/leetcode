@@ -10,7 +10,7 @@ public class MinimumDeletionstoMakeArrayBeautiful2216 {
         int deleteCount = 0;
         int i = 0;
 
-        while (i <= nums.length - 1) {
+        while (i < nums.length) {
             int comparePlusIndex = 1;
 
             while (i + comparePlusIndex < nums.length && nums[i] == nums[i + comparePlusIndex]) {
