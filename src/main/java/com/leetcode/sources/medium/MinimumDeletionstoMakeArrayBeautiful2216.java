@@ -18,9 +18,9 @@ public class MinimumDeletionstoMakeArrayBeautiful2216 {
                 comparePlusIndex++;
             }
             i += comparePlusIndex + 1;
-            if (i > nums.length) {
-                deleteCount++;
-            }
+        }
+        if ((nums.length - deleteCount) % 2 != 0) {
+            deleteCount++;
         }
         return deleteCount;
     }
