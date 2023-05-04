@@ -8,7 +8,7 @@ public class AddTwoNumbers {
 
     }
 
-    private ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    private static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         /*
         [9,9,9,9,9,9,9]
         [9,9,9,9]
@@ -62,7 +62,7 @@ public class AddTwoNumbers {
         return 0;
     }
 
-    public class ListNode {
+    public static class ListNode {
         int val;
         ListNode next;
 
