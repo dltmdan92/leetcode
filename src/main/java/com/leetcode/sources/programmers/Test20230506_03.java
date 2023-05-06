@@ -18,7 +18,7 @@ public class Test20230506_03 {
 
     private static int solution(String[] maps) {
         boolean islands[][] = new boolean[maps.length][maps[0].length()];
-        List<String> badaList = new ArrayList<>();
+        List<IslandNode> badaList = new ArrayList<>();
 
         for (int row = 0; row < maps.length; row++) {
             String line = maps[row];
@@ -26,7 +26,7 @@ public class Test20230506_03 {
             for (int col = 0; col < elements.length; col++) {
                 islands[row][col] = elements[col].equals("1");
                 if (!islands[row][col]) {
-                    badaList.add(row + "-" + col);
+                    badaList.add(new IslandNode(row, col));
                 }
             }
         }
@@ -36,10 +36,9 @@ public class Test20230506_03 {
         int[] dirRow = new int[] {-1, 1, 0, 0};
         int[] dirCol = new int[] {0, 0, -1, 1};
 
-        for (String bada : badaList) {
-            String[] badaIndex = bada.split("-");
-            int badaRow = Integer.parseInt(badaIndex[0]);
-            int badaCol = Integer.parseInt(badaIndex[1]);
+        for (IslandNode bada : badaList) {
+            int badaRow = bada.getRow();
+            int badaCol = bada.getCol();
             islands[badaRow][badaCol] = true;
 
             result = Math.max(result, dfs(islands, dirRow, dirCol));
@@ -129,4 +128,5 @@ public class Test20230506_03 {
         }
 
     }
+
 }
