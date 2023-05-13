@@ -7,11 +7,10 @@ public class ReverseInteger {
     }
 
     private static int reverse(int x) {
-
-        int multiple = String.valueOf(x).length() - 1;
+        boolean minus = x < 0;
+        int multiple = minus ? String.valueOf(x).length() - 2 : String.valueOf(x).length() - 1;
 
         long result = 0;
-        boolean minus = x < 0;
 
         if (minus) {
             while (x < 0) {
@@ -27,10 +26,6 @@ public class ReverseInteger {
                 x = x / 10;
                 multiple--;
             }
-        }
-
-        if (minus) {
-            result = result / 10;
         }
 
         if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) {
