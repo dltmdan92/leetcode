@@ -35,41 +35,40 @@ public class Test20230715_3 {
 
         long result = 0;
 
-        for (int node = 0; node < parking.length; node++) {
-            System.out.printf("node : %d, children count : %d, parent count : %d\n", node, getChildrenCount(node, childrenMap), getParentsCount(node, parentMap));
+        Map<Integer, Integer> childrenCountMap = new HashMap<>();
+        for (int node = parking.length - 1; node >= 0; node--) {
+            Set<Integer> children = childrenMap.get(node);
 
-            long exclusiveCount = 1 + getChildrenCount(node, childrenMap) + getParentsCount(node, parentMap);
+            Integer childrenCountOfChildren = children.stream()
+                    .filter(childrenCountMap::containsKey)
+                    .map(childrenCountMap::get)
+                    .reduce(Integer::sum)
+                    .orElse(0);
+
+            childrenCountMap.put(node, children.size() + childrenCountOfChildren);
+
+            System.out.printf("node : %d, children count : %d\n", node, childrenCountMap.get(node));
+        }
+
+        Map<Integer, Integer> parentCountMap = new HashMap<>();
+        for (int node = 0; node < parking.length; node++) {
+            if (parentMap.containsKey(node)) {
+                Integer parentNode = parentMap.get(node);
+                Integer parentCountOfParent = parentCountMap.getOrDefault(parentNode, 0);
+                parentCountMap.put(node, 1 + parentCountOfParent);
+                System.out.printf("parent node : %d, parent count of parent : %d\n", parentNode, parentCountOfParent);
+            } else {
+                parentCountMap.put(node, 0);
+            }
+        }
+
+        for (int node = 0; node < parking.length; node++) {
+            System.out.printf("node : %d, children count : %d, parent count : %d\n", node, childrenCountMap.get(node), parentCountMap.get(node));
+            long exclusiveCount = 1 + childrenCountMap.get(node) + parentCountMap.get(node);
             result += parking.length - exclusiveCount;
         }
 
         return result / 2;
-    }
-
-    private static long getChildrenCount(int node, Map<Integer, Set<Integer>> childrenMap) {
-        long result = 0;
-        Set<Integer> children = childrenMap.get(node);
-
-        while (!children.isEmpty()) {
-            result += children.size();
-            children = children.stream()
-                    .map(childrenMap::get)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toSet());
-        }
-
-        return result;
-    }
-
-    private static long getParentsCount(int node, Map<Integer, Integer> parentsMap) {
-        Integer parent = parentsMap.get(node);
-        long result = 0;
-
-        while (parent != null) {
-            result++;
-            parent = parentsMap.get(parent);
-        }
-
-        return result;
     }
 
 }
