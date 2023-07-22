@@ -1,6 +1,7 @@
 package com.leetcode.sources.programmers;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Test20230715_3 {
 
@@ -17,86 +18,58 @@ public class Test20230715_3 {
         Map<Integer, Integer> parentMap = new HashMap<>();
 
         for (int node = 0; node < parking.length; node++) {
-            int leftChildNode = parking[node][0];
-            int rightChildNode = parking[node][1];
+            Set<Integer> children = new HashSet<>();
 
-            if (leftChildNode == -1 && rightChildNode == -1) {
-                childrenMap.put(node, Collections.emptySet());
-            } else if (leftChildNode == -1 && rightChildNode == 1) {
-                childrenMap.put(node, Set.of(rightChildNode));
-            } else if (leftChildNode == 1 && rightChildNode == -1) {
-                childrenMap.put(node, Set.of(leftChildNode));
-            } else {
-                childrenMap.put(node, Set.of(leftChildNode, rightChildNode));
+            if (parking[node][0] != -1) {
+                children.add(parking[node][0]);
+                parentMap.put(parking[node][0], node);
             }
 
-            if (leftChildNode != - 1) parentMap.put(leftChildNode, node);
-            if (rightChildNode != -1) parentMap.put(rightChildNode, node);
-        }
-
-        System.out.println("CHILDREN MAP");
-        childrenMap.forEach((key, value) -> {
-            System.out.println("node : " + key);
-            System.out.println(value);
-        });
-
-        System.out.println("PARENT MAP");
-        parentMap.forEach((key, value) -> {
-            System.out.println("node : " + key);
-            System.out.println(value);
-        });
-
-        Map<Integer, Set<Integer>> parentNodes = new HashMap<>();
-
-        for (int i = 0; i < parking.length; i++) {
-            parentNodes.put(i, new HashSet<>());
-            int parentNodeHolder = i;
-            while (parentNodeHolder > 0) {
-                parentNodeHolder = parentMap.get(parentNodeHolder);
-                parentNodes.get(i).add(parentNodeHolder);
-            }
-        }
-
-
-
-        System.out.println("---------------------");
-
-        Set<Integer>[] result = new HashSet[parking.length];
-
-        result[0] = new HashSet<>();
-
-        for (int parkNode1 = 1; parkNode1 < parking.length; parkNode1++) {
-            System.out.println();
-            System.out.println();
-            System.out.println("parkNode1 : " + parkNode1);
-
-            Set<Integer> childNodes = new HashSet<>();
-            result[parkNode1] = new HashSet<>();
-
-            System.out.println("parentNodes : " + parentNodes);
-
-            for (int i = 0; i < parking.length; i++) {
-
-                if (parentNodes.containsKey(i) || i == parkNode1 || parentNodes.get(i).contains(parkNode1)) {
-
-                } else {
-                    System.out.printf("i : %d \t", i);
-                    result[parkNode1].add(i);
-                }
+            if (parking[node][1] != -1) {
+                children.add(parking[node][1]);
+                parentMap.put(parking[node][1], node);
             }
 
-            System.out.println();
-            System.out.println();
+            childrenMap.put(node, children);
         }
 
-        int answer = 0;
+        long result = 0;
 
-        for (Set<Integer> x : result) {
-            System.out.println(x);
-            answer += x.size();
+        for (int node = 0; node < parking.length; node++) {
+            System.out.printf("node : %d, children count : %d, parent count : %d\n", node, getChildrenCount(node, childrenMap), getParentsCount(node, parentMap));
+
+            long exclusiveCount = 1 + getChildrenCount(node, childrenMap) + getParentsCount(node, parentMap);
+            result += parking.length - exclusiveCount;
         }
 
-        return answer;
+        return result / 2;
+    }
+
+    private static long getChildrenCount(int node, Map<Integer, Set<Integer>> childrenMap) {
+        long result = 0;
+        Set<Integer> children = childrenMap.get(node);
+
+        while (!children.isEmpty()) {
+            result += children.size();
+            children = children.stream()
+                    .map(childrenMap::get)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
+        }
+
+        return result;
+    }
+
+    private static long getParentsCount(int node, Map<Integer, Integer> parentsMap) {
+        Integer parent = parentsMap.get(node);
+        long result = 0;
+
+        while (parent != null) {
+            result++;
+            parent = parentsMap.get(parent);
+        }
+
+        return result;
     }
 
 }
